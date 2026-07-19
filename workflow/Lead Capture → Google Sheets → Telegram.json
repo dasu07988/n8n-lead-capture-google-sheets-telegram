@@ -1,0 +1,331 @@
+{
+  "name": "Lead Capture → Google Sheets → Telegram",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-capture",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -416,
+        32
+      ],
+      "id": "9bfc3d73-357b-492b-8353-b0c34c05d081",
+      "name": " Receive Lead",
+      "webhookId": "fc637fc5-56f5-4d23-8fda-e27cc2f39907"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "543159dc-7db1-4c16-8bbe-be9a0d4c34cb",
+              "leftValue": "={{ $json.email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "dateTime",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -176,
+        -32
+      ],
+      "id": "adb4ae70-ccb9-40df-99a1-4dde97187d2e",
+      "name": "Validate Lead"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b11db18d-b35c-4d24-b278-ce08aa3eaccf",
+              "name": "name",
+              "value": "={{ $json.body.name }}",
+              "type": "string"
+            },
+            {
+              "id": "897f5a41-cb76-493c-9e61-409aec007068",
+              "name": "email",
+              "value": "={{ $json.body.email }}",
+              "type": "string"
+            },
+            {
+              "id": "e896354e-defe-402b-b2d7-18e710b9be52",
+              "name": "phone",
+              "value": "={{ $json.body.phone }}\n",
+              "type": "string"
+            },
+            {
+              "id": "db51e6ac-7c94-48ef-b438-f7a0eb1df83f",
+              "name": "company",
+              "value": "={{ $json.body.company }}",
+              "type": "string"
+            },
+            {
+              "id": "a88a7b9d-9623-43ae-8508-e4ec28123642",
+              "name": "message",
+              "value": "={{ $json.body.message }}",
+              "type": "string"
+            },
+            {
+              "id": "3daaca25-5d9a-4ebb-8edd-ba4997b4b422",
+              "name": "created_at",
+              "value": "={{ $now }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        80,
+        -224
+      ],
+      "id": "88f8f136-9260-4236-8983-b27ce0242d63",
+      "name": "Normalize Lead"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1PcE01BjshtxPZKUXj4ZUBhjTkIh7BwloWn1bu0N7OOg",
+          "mode": "list",
+          "cachedResultName": "Lead Capture Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1PcE01BjshtxPZKUXj4ZUBhjTkIh7BwloWn1bu0N7OOg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1PcE01BjshtxPZKUXj4ZUBhjTkIh7BwloWn1bu0N7OOg/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{$json.name}}",
+            "Email": "={{$json.email}}",
+            "Phone": "=={{ String($json.phone).trim() }}",
+            "Company": "={{$json.company}}",
+            "Message": "={{$json.message}}",
+            "Created At": "={{$json.created_at}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Message",
+              "displayName": "Message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Created At",
+              "displayName": "Created At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        384,
+        -128
+      ],
+      "id": "7698ac31-d170-4339-a782-b88b6b34cc11",
+      "name": "Save Lead ",
+      "credentials": {
+        "googleApi": {
+          "id": "z2Rwsm9piy8kTWxm",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "1231601053",
+        "text": "=🚀 New Lead Received  👤 Name: {{$json[\"Name\"]}}  📧 Email: {{$json[\"Email\"]}}  📱 Phone: {{$json[\"Phone\"]}}  🏢 Company: {{$json[\"Company\"]}}  💬 Message: {{$json[\"Message\"]}}  🕒 Received: {{$json[\"Created At\"]}}",
+        "replyMarkup": "=none",
+        "forceReply": {},
+        "replyKeyboardOptions": {},
+        "replyKeyboardRemove": {},
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        416,
+        96
+      ],
+      "id": "afb88688-761f-4358-bc56-32c5f8a2280d",
+      "name": "Notify Team",
+      "webhookId": "e9a88ef8-efed-4b15-bca9-ae4ecb42252a",
+      "credentials": {
+        "telegramApi": {
+          "id": "l0DWE7QuZLWJP2GY",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        400,
+        320
+      ],
+      "id": "7fc10989-bf91-4278-b59f-e9d2639cd849",
+      "name": "Return Success"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    " Receive Lead": {
+      "main": [
+        [
+          {
+            "node": "Validate Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Lead": {
+      "main": [
+        [
+          {
+            "node": "Return Success",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Normalize Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Lead": {
+      "main": [
+        [
+          {
+            "node": "Save Lead ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Lead ": {
+      "main": [
+        [
+          {
+            "node": "Notify Team",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify Team": {
+      "main": [
+        [
+          {
+            "node": "Return Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "0f822eef-59b9-45d1-9ee0-05a6cd6052ba",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8d445741768728f6ef02e0425470dc298a89577d75c26d14dd2b68dfd38dddc0"
+  },
+  "nodeGroups": [],
+  "id": "RVhvEJGw1TxfsDzi",
+  "tags": []
+}
